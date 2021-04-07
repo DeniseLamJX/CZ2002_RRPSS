@@ -33,7 +33,7 @@ public class ReservationController {
 					for (Table table : TableController.amAvailableTables()) {
 						if (pax < table.getSize()) {
 							tableId = table.getTableId();
-							table.setPmStatus(TableStatus.RESERVED);
+							table.setAmStatus(TableStatus.RESERVED);
 							reservations.add(new Reservation(pax, contactNumber, tableId));
 							System.out.println("Reservation successful. Table " + tableId + " is reserved.");
 							System.out.println("Reservation successful.");
