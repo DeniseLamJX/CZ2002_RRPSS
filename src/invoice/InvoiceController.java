@@ -31,6 +31,14 @@ public class InvoiceController {
     	invoice.setMenuItems(menuItems);
     	invoice.setPromoItems(promoItems);
     	invoice.setSubtotal(subtotal);
+
+	int hour = order.getTimeStamp().getHour();
+    	if (hour < 12) {
+    		table.setAmStatus(TableStatus.VACATED);
+    	} else {
+    		table.setPmStatus(TableStatus.VACATED);
+    	}
+    	order.clearAllItems();
     	invoiceList.add(invoice);
 
         System.out.println("InvoiceID " + invoice.getInvoiceId() + " saved successfully.");
