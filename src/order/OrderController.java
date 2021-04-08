@@ -2,6 +2,7 @@ package order;
 
 import java.util.Scanner;
 import java.time.LocalTime;
+import database.exceptions.FailReadException;
 import menu.Menu;
 import menu.MenuController;
 import promo.Promo;
@@ -12,7 +13,7 @@ import table.TableStatus;
 
 public class OrderController {
 	
-	public static void newOrder(int tableID, int staffID) {
+	public static void newOrder(int tableID, int staffID) throws FailReadException {
 		int hour = LocalTime.now().getHour();
 		Order order = new Order(tableID, staffID);
 		Table table = TableController.getTable(tableID);
@@ -25,7 +26,7 @@ public class OrderController {
 		addItemsToOrder(order);
 	}
 	
-	public static void addItemsToOrder(Order order) {
+	public static void addItemsToOrder(Order order) throws FailReadException {
 		int itemID;
 		Scanner sc = new Scanner(System.in);
 		

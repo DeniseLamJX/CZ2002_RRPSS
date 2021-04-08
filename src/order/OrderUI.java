@@ -1,6 +1,7 @@
 package order;
 
 import java.util.Scanner;
+import database.exceptions.FailReadException;
 import table.TableController;
 
 public class OrderUI {
@@ -46,12 +47,16 @@ public class OrderUI {
 	}
 	
 	public static void newOrderUI() {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Enter staff ID.");
-		int staffID = sc.nextInt();
-		System.out.println("Enter table ID: ");
-		int tableID = sc.nextInt();
-		OrderController.newOrder(tableID, staffID);
+		try {
+			Scanner sc = new Scanner(System.in);
+			System.out.println("Enter staff ID.");
+			int staffID = sc.nextInt();
+			System.out.println("Enter table ID: ");
+			int tableID = sc.nextInt();
+			OrderController.newOrder(tableID, staffID);
+		} catch (FailReadException e) {
+            System.out.println(e.getMessage());
+        }
 	}
 	
 	public static void viewOrderUI() {
@@ -63,11 +68,15 @@ public class OrderUI {
 	}
 	
 	public static void addItemsUI() {
-		Scanner sc = new Scanner(System.in);
-		TableController.showOccupiedTables();
-		System.out.println("Enter table ID: ");
-		int tableID = sc.nextInt();
-		OrderController.addItemsToOrder(TableController.getTable(tableID).getOrder());
+		try {
+			Scanner sc = new Scanner(System.in);
+			TableController.showOccupiedTables();
+			System.out.println("Enter table ID: ");
+			int tableID = sc.nextInt();
+			OrderController.addItemsToOrder(TableController.getTable(tableID).getOrder());
+		} catch (FailReadException e) {
+            System.out.println(e.getMessage());
+        }
 	}
 	
 	public static void removeItemsUI() {
