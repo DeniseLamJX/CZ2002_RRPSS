@@ -1,15 +1,24 @@
 package invoice;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import database.SerializeDB;
+import database.exceptions.FailReadException;
+import database.exceptions.FailWriteException;
+import base.BaseController;
 import menu.Menu;
 import promo.Promo;
 import table.Table;
 import order.Order;
 
-public class InvoiceController {
+public class InvoiceController extends BaseController{
     private static ArrayList<Invoice> invoiceList = new ArrayList<Invoice>();
-
+    
+    private InvoiceController() {super();};
+    
     public static void saveInvoice(Table table){
+    	//throw some exceptions
     	Order order = table.getOrder();
     	Invoice invoice = new Invoice(order);
     	invoice.setInvoiceId(invoiceList.size());
@@ -38,14 +47,22 @@ public class InvoiceController {
     	} else {
     		table.setPmStatus(TableStatus.VACATED);
     	}
-    	order.clearAllItems();
+    	//order.deleteOrder(table.getTableId());
     	invoiceList.add(invoice);
+    	saveInvoiceListToFile(invoiceList);
 
         System.out.println("InvoiceID " + invoice.getInvoiceId() + " saved successfully.");
     }
 
 
     public static void viewInvoice (int invoiceId) {
+    	ArrayList<Invoice> invoiceList = null;
+    	try {
+    		invoiceList = retrieveInvoiceList();
+    	}
+    	catch (FailReadException e) {
+    		System.out.println("e.getMessage()");
+    	}
     	Invoice invoice = invoiceList.get(invoiceId - 1);
     	int tableId = invoice.getOrder().getTable();
 
@@ -61,4 +78,17 @@ public class InvoiceController {
     }
 
     public static ArrayList<Invoice> getInvoiceList() { return invoiceList; }
+    
+    public static ArrayList<Invoice> retrieveInvoiceList() throws FailReadException { //
+    	List list = SerializeDB.readSerializedObject("invoice.dat");
+        return list == null ? new ArrayList<>() : (ArrayList) list; 
+    }
+    
+    //save invoice list to file array list    
+     private static void saveInvoiceListToFile(ArrayList<Invoice> invoiceList) throws FailWriteException{
+    	 SerializeDB.writeSerializeObject("invoice.dat", invoiceList);
+ }
+     //private static void saveInvoiceListToFile1(Object invoice) throws FailWriteException{
+	//SerializeDB.writeSerializeObject("invoice.dat", invoice);
+  //   }
 }
