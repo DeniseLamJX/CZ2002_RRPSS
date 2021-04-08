@@ -3,6 +3,7 @@ package order;
 import java.util.Scanner;
 import database.exceptions.FailReadException;
 import table.TableController;
+import order.exception.OrderNotFound;
 
 public class OrderUI {
 	
@@ -60,11 +61,18 @@ public class OrderUI {
 	}
 	
 	public static void viewOrderUI() {
-		Scanner sc = new Scanner(System.in);
-		TableController.showOccupiedTables();
-		System.out.println("Enter table ID: ");
-		int tableID = sc.nextInt();
-		OrderController.printOrder(TableController.getTable(tableID).getOrder()); 
+		try {
+			Scanner sc = new Scanner(System.in);
+			TableController.showOccupiedTables();
+			System.out.println("Enter table ID: ");
+			int tableID = sc.nextInt();
+			if (TableController.getTable(tableID).getOrder() == null) {
+				throw new OrderNotFound();
+			}
+			OrderController.printOrder(TableController.getTable(tableID).getOrder()); 
+		} catch (OrderNotFound e) {
+            System.out.println(e.getMessage());
+        }
 	}
 	
 	public static void addItemsUI() {
@@ -73,18 +81,27 @@ public class OrderUI {
 			TableController.showOccupiedTables();
 			System.out.println("Enter table ID: ");
 			int tableID = sc.nextInt();
+			if (TableController.getTable(tableID).getOrder() == null) {
+				throw new OrderNotFound();
+			}
 			OrderController.addItemsToOrder(TableController.getTable(tableID).getOrder());
-		} catch (FailReadException e) {
+		} catch (FailReadException | OrderNotFound e) {
             System.out.println(e.getMessage());
         }
 	}
 	
 	public static void removeItemsUI() {
-		Scanner sc = new Scanner(System.in);
-		TableController.showOccupiedTables();
-		System.out.println("Enter table ID: ");
-		int tableID = sc.nextInt();
-		OrderController.removeItemsFromOrder(TableController.getTable(tableID).getOrder());
+		try {
+			Scanner sc = new Scanner(System.in);
+			TableController.showOccupiedTables();
+			System.out.println("Enter table ID: ");
+			int tableID = sc.nextInt();
+			if (TableController.getTable(tableID).getOrder() == null) {
+				throw new OrderNotFound();
+			}
+			OrderController.removeItemsFromOrder(TableController.getTable(tableID).getOrder());
+		} catch (OrderNotFound e) {
+            System.out.println(e.getMessage());
+        }
 	}
-	
 }

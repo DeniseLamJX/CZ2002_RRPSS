@@ -10,20 +10,24 @@ import promo.PromoController;
 import table.Table;
 import table.TableController;
 import table.TableStatus;
+import order.exception.OrderNotFound;
 
 public class OrderController {
 	
 	public static void newOrder(int tableID, int staffID) throws FailReadException {
 		int hour = LocalTime.now().getHour();
-		Order order = new Order(tableID, staffID);
 		Table table = TableController.getTable(tableID);
-		table.setOrder(order);
-		if (hour < 12) {
-			table.setAmStatus(TableStatus.OCCUPIED);
-		} else {
-			table.setPmStatus(TableStatus.OCCUPIED);
+		if (table.getAmStatus() != TableStatus.OCCUPIED || table.getPmStatus() != TableStatus.OCCUPIED) {
+			Order order = new Order(tableID, staffID);
+			table.setOrder(order);
+			if (hour < 12) {
+				table.setAmStatus(TableStatus.OCCUPIED);
+			} else {
+				table.setPmStatus(TableStatus.OCCUPIED);
+			}
+			addItemsToOrder(order);
 		}
-		addItemsToOrder(order);
+		else { System.out.println("Table " + tableID + "already occupied, please edit its existing order."); }
 	}
 	
 	public static void addItemsToOrder(Order order) throws FailReadException {
