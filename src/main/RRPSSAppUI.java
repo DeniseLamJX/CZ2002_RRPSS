@@ -5,6 +5,7 @@ import invoice.InvoiceUI;
 import menu.MenuUI;
 import promo.PromoUI;
 import reservation.ReservationUI;
+import order.OrderController;
 import order.OrderUI;
 import revenuereport.RevenueReportUI;
 import table.TableController;
@@ -73,5 +74,6 @@ public class RRPSSAppUI {
     private static void createTables() {
     	TableController tableController = new TableController();
     	tableController.createTables();
+        OrderController.createOrderDatabaseFiles();
     }
 }

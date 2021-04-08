@@ -1,7 +1,9 @@
 package order;
 
 import java.util.Scanner;
+import java.io.File;
 import java.time.LocalTime;
+import database.SerializeDB;
 import database.exceptions.FailReadException;
 import menu.Menu;
 import menu.MenuController;
@@ -14,6 +16,12 @@ import order.exception.OrderNotFound;
 
 public class OrderController {
 	
+	public static void createOrderDatabaseFiles() {
+		//for now there are 10 tables, according to tablecontroller
+		for (int i = 0; i < 10; i++) {
+			SerializeDB.createFile("Table"+i+"Order", "orders"+File.separator);
+		}
+	}
 	public static void newOrder(int tableID, int staffID) throws FailReadException {
 		int hour = LocalTime.now().getHour();
 		Table table = TableController.getTable(tableID);

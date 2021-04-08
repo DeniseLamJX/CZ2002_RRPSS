@@ -104,6 +104,31 @@ public class SerializeDB {
     }
 
     /**
+     * Create a new .dat file in db
+     *
+     * @param filename Name of the file to be created, "filename".dat.
+     * @param filepathInDB The file path in the db directory. Should be an empty string if
+     * file is to be created directly in db directory.
+     */
+    public static void createFile(String filename, String filepathInDB) {
+        try {
+            String currentDirectory = System.getProperty("user.dir");
+            String filepath = currentDirectory + File.separator + "src" + 
+                File.separator + "database" + File.separator + "db" + File.separator + filepathInDB;
+            File newFile = new File(filepath + filename + ".dat");
+            System.out.println("Attempting to create" + filepath + filename + ".dat");
+            if (newFile.createNewFile()) {
+              System.out.println("File created: " + newFile.getName());
+            } else {
+              System.out.println("File already exists.");
+            }
+          } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+          }
+    }
+
+    /**
      * Returns the absolute path to a file inside database/db.
      *
      * @param filename The name of file to be opened. It must be a .dat file in database/db.
