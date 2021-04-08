@@ -2,6 +2,8 @@ package order;
 
 import java.util.Scanner;
 import database.exceptions.FailReadException;
+import database.exceptions.FailWriteException;
+import database.SerializeDB;
 import table.TableController;
 import order.exception.OrderNotFound;
 
@@ -55,7 +57,7 @@ public class OrderUI {
 			System.out.println("Enter table ID: ");
 			int tableID = sc.nextInt();
 			OrderController.newOrder(tableID, staffID);
-		} catch (FailReadException e) {
+		} catch (FailReadException | FailWriteException e) {
             System.out.println(e.getMessage());
         }
 	}
@@ -81,11 +83,14 @@ public class OrderUI {
 			TableController.showOccupiedTables();
 			System.out.println("Enter table ID: ");
 			int tableID = sc.nextInt();
-			if (TableController.getTable(tableID).getOrder() == null) {
+			Order order = TableController.getTable(tableID).getOrder();
+			if ( order == null) {
 				throw new OrderNotFound();
 			}
-			OrderController.addItemsToOrder(TableController.getTable(tableID).getOrder());
-		} catch (FailReadException | OrderNotFound e) {
+			OrderController.addItemsToOrder(order);
+			SerializeDB.emptyFile("Table"+tableID+"Order.dat");
+			SerializeDB.writeSerializeObject("Table"+tableID+"Order.dat", order);
+		} catch (FailReadException | FailWriteException | OrderNotFound e) {
             System.out.println(e.getMessage());
         }
 	}
@@ -96,11 +101,14 @@ public class OrderUI {
 			TableController.showOccupiedTables();
 			System.out.println("Enter table ID: ");
 			int tableID = sc.nextInt();
-			if (TableController.getTable(tableID).getOrder() == null) {
+			Order order = TableController.getTable(tableID).getOrder();
+			if (order == null) {
 				throw new OrderNotFound();
 			}
-			OrderController.removeItemsFromOrder(TableController.getTable(tableID).getOrder());
-		} catch (OrderNotFound e) {
+			OrderController.removeItemsFromOrder(order);
+			SerializeDB.emptyFile("Table"+tableID+"Order.dat");
+			SerializeDB.writeSerializeObject("Table"+tableID+"Order.dat", order);
+		} catch (FailWriteException | OrderNotFound e) {
             System.out.println(e.getMessage());
         }
 	}

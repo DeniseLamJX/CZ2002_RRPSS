@@ -4,6 +4,8 @@ import base.BaseModel;
 import database.exceptions.FailReadException;
 import database.exceptions.FailWriteException;
 
+import order.Order;
+
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -72,6 +74,31 @@ public class SerializeDB {
     }
 
     /**
+     * Write an Order object into a .dat file.
+     * Method overload of writeSerializeObject(String filename, List list)
+     *
+     * @param filename The name of file to save your data. The file must be a .dat file in database/db.
+     * @param list The List of Objects to be saved into file.
+     * @throws FailWriteException
+     */
+    public static void writeSerializeObject(String filename, Order order) throws FailWriteException {
+        FileOutputStream fout = null;
+        ObjectOutputStream out = null;
+
+        String filepath = getFilePath(filename);
+
+        try {
+            fout = new FileOutputStream(filepath);
+            out = new ObjectOutputStream(fout);
+            out.writeObject(order);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new FailWriteException();
+        }
+    }
+
+    /**
      * Search for a BaseModel object in an ArrayList by id.
      *
      * @param items An ArrayList of BaseModel objects.
@@ -106,7 +133,7 @@ public class SerializeDB {
     /**
      * Create a new .dat file in db
      *
-     * @param filename Name of the file to be created, "filename".dat.
+     * @param filename Name of the file to be created, must be .dat
      * @param filepathInDB The file path in the db directory. Should be an empty string if
      * file is to be created directly in db directory.
      */
@@ -115,13 +142,27 @@ public class SerializeDB {
             String currentDirectory = System.getProperty("user.dir");
             String filepath = currentDirectory + File.separator + "src" + 
                 File.separator + "database" + File.separator + "db" + File.separator + filepathInDB;
-            File newFile = new File(filepath + filename + ".dat");
-            System.out.println("Attempting to create" + filepath + filename + ".dat");
+            File newFile = new File(filepath + filename);
             if (newFile.createNewFile()) {
               System.out.println("File created: " + newFile.getName());
             } else {
               System.out.println("File already exists.");
             }
+          } catch (IOException e) {
+            System.out.println("Error uncountered when creating file.");
+            e.printStackTrace();
+          }
+    }
+
+    /**
+     * Deletes contents of a file.
+     *
+     * @param filename Name of the file to be emptied.
+     */
+    public static void emptyFile(String filename) {
+        try {
+            String filepath = getFilePath(filename);
+            new FileOutputStream(filepath).close(); //empties the file
           } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();

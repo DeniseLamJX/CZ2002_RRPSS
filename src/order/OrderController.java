@@ -5,6 +5,7 @@ import java.io.File;
 import java.time.LocalTime;
 import database.SerializeDB;
 import database.exceptions.FailReadException;
+import database.exceptions.FailWriteException;
 import menu.Menu;
 import menu.MenuController;
 import promo.Promo;
@@ -22,7 +23,8 @@ public class OrderController {
 			SerializeDB.createFile("Table"+i+"Order", "orders"+File.separator);
 		}
 	}
-	public static void newOrder(int tableID, int staffID) throws FailReadException {
+	
+	public static void newOrder(int tableID, int staffID) throws FailReadException, FailWriteException {
 		int hour = LocalTime.now().getHour();
 		Table table = TableController.getTable(tableID);
 		if (table.getAmStatus() != TableStatus.OCCUPIED || table.getPmStatus() != TableStatus.OCCUPIED) {
@@ -34,6 +36,7 @@ public class OrderController {
 				table.setPmStatus(TableStatus.OCCUPIED);
 			}
 			addItemsToOrder(order);
+			SerializeDB.writeSerializeObject("Table"+tableID+"Order.dat", order);
 		}
 		else { System.out.println("Table " + tableID + "already occupied, please edit its existing order."); }
 	}
@@ -57,7 +60,7 @@ public class OrderController {
 				if (itemID == promo.getId()) order.addPromo(promo);
 			}
 		} while (itemID != -1);
-			
+		
 		printOrder(order);
 	}
 	
@@ -90,5 +93,6 @@ public class OrderController {
 
 	public static void deleteOrder(int tableID) {
 		TableController.getTable(tableID).setOrder(null);
+		SerializeDB.emptyFile("Table"+tableID+"Order.dat");
 	}
 }

@@ -1,11 +1,12 @@
 package order;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import menu.Menu;
 import promo.Promo;
 
-public class Order {
+public class Order implements Serializable{
 	private LocalDateTime timestamp;
 	private int tableId;
 	private int staffId;
