@@ -2,6 +2,9 @@ package revenuereport;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import database.exceptions.FailReadException;
+
 import java.time.Month;
 import invoice.Invoice;
 import invoice.InvoiceController;
@@ -39,9 +42,22 @@ public class RevenueReportUI {
             }
         } while (option != 3);
     }
+    
+    private static ArrayList<Invoice> initialiseInvoice() {
+    	ArrayList<Invoice> invoiceList = null;
+    	try {
+    		invoiceList = InvoiceController.retrieveInvoiceList();
+    	}
+    	catch (FailReadException e) {
+    		System.out.println("e.getMessage()");
+    	}
+    	return invoiceList;
+    }
 
     private static void loadInvoicesUI() {
-		ArrayList<Invoice> invoiceList = InvoiceController.getInvoiceList();
+		//ArrayList<Invoice> invoiceList = InvoiceController.getInvoiceList();
+    	
+    	ArrayList<Invoice> invoiceList = initialiseInvoice();
         if (invoiceList.size() == 0) {
             System.out.println("No invoices found.");
         } else {
