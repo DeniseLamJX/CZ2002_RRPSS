@@ -80,4 +80,7 @@ public class OrderController {
 		order.printOrderPromos();
 	}
 
+	public static void deleteOrder(int tableID) {
+		TableController.getTable(tableID).setOrder(null);
+	}
 }
