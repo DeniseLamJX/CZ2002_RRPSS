@@ -1,10 +1,15 @@
 package invoice;
 
 import table.TableController;
+import base.BaseCRUD;
 import java.util.Scanner;
 
-public class InvoiceUI {
+public class InvoiceUI extends BaseCRUD {
 
+	//public InvoiceUI(int id){
+	//	super(id);
+	//}
+	
 	public void mainApp() {
 		int option;
 		Scanner sc = new Scanner(System.in);
